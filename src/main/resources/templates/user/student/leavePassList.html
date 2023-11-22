@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="~{include/title.html::title}"></title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+    <link rel="stylesheet" th:href="@{/css/leavePass/leavePassList.css}">
+
+    <script th:replace="~{include/common_js.html::jquery_cdn}" type="text/javascript"></script>
+    <script th:replace="~{include/student/leavePassListJs.html::js}" type="text/javascript"></script>
+
+</head>
+<body>
+
+<header th:replace="~{include/headerNavFooter.html::header}">
+</header>
+
+<div id="wrap">
+    <nav th:replace="~{include/leavePass/nav.html::nav}">
+    </nav>
+    <section id="sectionWrap">
+        <div class="leavePassList">
+            <div class="content_list">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>학생 이름</th>
+                        <th>학생 아이디</th>
+                        <th>학년</th>
+                        <th>기숙사실</th>
+                        <th>외박 사유</th>
+                        <th>외박 일자</th>
+                        <th>복귀 일자</th>
+                        <th>승인 여부</th>
+                        <th>삭제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="leavePassDto : ${leavePassDtos}">
+                        <td th:text="${leavePassDto.student_name}"></td>
+                        <td th:text="${leavePassDto.student_id}"></td>
+                        <td th:text="${leavePassDto.student_grade}"></td>
+                        <td th:text="${leavePassDto.dormitory}"></td>
+                        <td th:text="${leavePassDto.content}"></td>
+                        <td th:text="${leavePassDto.start_date}"></td>
+                        <td th:text="${leavePassDto.end_date}"></td>
+                        <td th:if="${leavePassDto.admin_approval eq 0}">
+                            미승인
+                        </td>
+                        <td th:if="${leavePassDto.admin_approval eq 1}">
+                            승인완료
+                        </td>
+                        <td>
+                            <a class="deleteLeavePass" href="#none" th:data-no="${leavePassDto.no}">삭제</a>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div class="page_wrap">
+
+                <div class="page_number">
+
+                </div>
+
+                <div class="page_goto">
+                    <input type="number" name="page_target_num">&nbsp; &#47; <span class="page_total_num"></span>
+                    <a class="goto_page_btn" href="#none">Go to page</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{include/headerNavFooter.html::footer}">
+    </footer>
+</div>
+
+
+</body>
+</html>

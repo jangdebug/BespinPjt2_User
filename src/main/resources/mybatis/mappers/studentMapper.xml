@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oneteam.dormease.user.student.IStudentMapper">
+    <insert id="insertNewStudent" parameterType="StudentDto">
+        INSERT INTO
+            student (
+                     id, password, name, phone, mail, gender, zip_code, address, address_detail1, address_detail2, school_no, school_name, grade, class_no, eigen_no, reg_date, mod_date
+        ) VALUES (
+                    #{id}, #{password}, #{name}, #{phone}, #{mail}, #{gender}, #{zip_code}, #{address}, #{address_detail1}, #{address_detail2}, #{school_no}, #{school_name}, #{grade}, #{class_no}, #{eigen_no}, now(), now())
+    </insert>
+    <select id="selectStudentByID" parameterType="String">
+        SELECT
+            s.*,
+            i.zip_code as school_zip_code
+        FROM
+            student s
+        JOIN
+            schoolInfo i
+        ON
+            s.school_no = i.school_code
+        WHERE
+            s.id = #{id} AND s.status = 1
+    </select>
+    <update id="updateStudent" parameterType="StudentDto">
+    UPDATE
+        student
+    SET
+        phone = #{phone},
+        mail = #{mail},
+        gender = #{gender},
+        zip_code = #{zip_code},
+        address = #{address},
+        address_detail1 = #{address_detail1},
+        address_detail2 = #{address_detail2}
+    WHERE
+        no = #{no}
+    </update>
+    <update id="updateFailCount" parameterType="StudentDto">
+        UPDATE
+            student
+        <set>
+            <if test="no == 0">
+                fail_count = fail_count + 1
+            </if>
+            <if test="no != 0">
+                fail_count = 0
+            </if>
+        </set>
+        WHERE
+            id = #{id}
+    </update>
+    <delete id="deleteLeavePassByNo" parameterType="Integer">
+        DELETE
+        FROM
+            leave_pass
+        WHERE
+            no = #{no}
+        AND
+            start_date <![CDATA[>]]> CURRENT_DATE()
+    </delete>
+    <update id="deleteStudentByNo" parameterType="Integer">
+        UPDATE
+            student
+        SET
+            status = 0
+        where
+            no = #{no}
+    </update>
+    <insert id="insertNewLeaveOut" parameterType="LeavePassDto">
+        INSERT INTO
+            leave_pass (
+            school_no, dormitory, student_no, student_id, student_name, student_grade, content, admin_approval, start_date, end_date, reg_date, mod_date
+        ) VALUES (
+                     #{school_no}, #{dormitory}, #{student_no}, #{student_id}, #{student_name}, #{student_grade}, #{content}, #{admin_approval}, #{start_date}, #{end_date}, now(), now())
+    </insert>
+</mapper>

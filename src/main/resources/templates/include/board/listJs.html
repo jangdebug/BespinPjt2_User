@@ -1,0 +1,151 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+  $(document).ready(function() {
+    console.log('READY!!');
+
+    setPage();
+
+    // movePage();
+
+    init_main_event();
+
+  });
+  // /////////////////////////////////////////////////////////////////////////////////////////////////
+  // 페이지 이동
+  // function movePage(page) {
+  //
+  //     // 1. 검색 폼
+  //     const form = document.getElementById('searchForm');
+  //
+  //     // 2. drawPage( )의 각 버튼에 선언된 onclick 이벤트를 통해 전달받는 page(페이지 번호)를 기준으로 객체 생성
+  //     const queryParams = {
+  //         page: (page) ? page : 1,
+  //         recordSize: 10,
+  //         pageSize: 10,
+  //         searchType: form.searchType.value,
+  //         keyword: form.keyword.value
+  //     }
+  //
+  //     /*
+  //      * 3. location.pathname : 리스트 페이지의 URI("/post/list.do")를 의미
+  //      *    new URLSearchParams(queryParams).toString() : queryParams의 모든 프로퍼티(key-value)를 쿼리 스트링으로 변환
+  //      *    URI + 쿼리 스트링에 해당하는 주소로 이동
+  //      *    (해당 함수가 리턴해주는 값을 브라우저 콘솔(console)에 찍어보시면 쉽게 이해하실 수 있습니다.)
+  //      */
+  //     location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+  // }
+  // ///////////////////////////////////////////////////////////////////////////////////////////////////
+  function setPage() {
+    console.log('setPage() CALLED!!');
+
+    let pageMakerDto = [[${pageMakerDto}]];
+
+    /* PAGE UI */
+    $('#sectionWrap > div.page_wrap > div.page_number').children().remove();
+
+    // 이전 페이지
+    if (pageMakerDto.prev) {
+      $('#sectionWrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="' + (pageMakerDto.startPage - 1) + '">PRE</a>');
+    }
+
+    // 처음 페이지
+    if (pageMakerDto.criteria.pageNum > 10) {
+      $('#sectionWrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="1">1</a><span>...</span>');
+    }
+
+    // 페이지 넘버링
+    for (let p = parseInt(pageMakerDto.startPage); p <= parseInt(pageMakerDto.endPage); p++) {
+      $('#sectionWrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="' + p + '">' + p + '</a>');
+    }
+
+    // 페이지 하이라이트
+    $('#sectionWrap > div.page_wrap > div.page_number a[data-pagenum=' + pageMakerDto.criteria.pageNum + ']').addClass('selectedPageNum');
+
+    // 다음 페이지
+    if (pageMakerDto.next) {
+      $('#sectionWrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="' + (pageMakerDto.endPage + 1) + '">NEX</a>');
+    }
+
+    // 전체 페이지
+    $('#sectionWrap > div.page_wrap > div.page_goto > span.page_total_num').text(pageMakerDto.totalPage);
+
+  }
+
+  function init_main_event() {
+    console.log('init_main_event() CALLED!!');
+
+    // 페이지 번호 클릭 시
+    $(document).on('click', '#sectionWrap  div.page_wrap  div.page_number a', function() {
+      console.log('page number CLICK HANDLER');
+
+      let pageNum = $(this).data('pagenum');
+      let keyWord = [[${keyWord}]];
+      let search = [[${search}]];
+
+        if(keyWord != null && search != null){
+            location.href = '/board/freeBoardListForm?pageNum='+pageNum+'&keyWord='+keyWord +"&search="+search;
+        } else {
+            location.href = '/board/freeBoardListForm?pageNum='+pageNum;
+        }
+
+    });
+
+    // 페이지 번호 입력 시
+    $(document).on('click', '#sectionWrap > div.page_wrap > div.page_goto a.goto_page_btn', function() {
+      console.log('page_goto BUTTON CLICK HANDLER');
+
+      let targetPageNum = $('#sectionWrap input[name="page_target_num"]').val();
+      let totalPageNum = $('#sectionWrap span.page_total_num').text();
+
+        let keyWord = [[${keyWord}]];
+        let search = [[${search}]];
+
+      if (targetPageNum == '' || targetPageNum == ' ' || targetPageNum == null) {
+        alert('이동하고자 하는 페이지 숫자를 입력하세요!');
+        $('#sectionWrap input[name="page_target_num"]').focus();
+        return;
+
+      } else if (parseInt(targetPageNum) < 1) {
+        alert('1페이지 미만은 존재하지 않습니다!');
+        $('#sectionWrap input[name="page_target_num"]').val('');
+        $('#sectionWrap input[name="page_target_num"]').focus();
+        return;
+
+      } else if (parseInt(targetPageNum) > parseInt(totalPageNum)) {
+        alert(totalPageNum + '을(를) 초과할 수 없습니다!');
+        $('#sectionWrap input[name="page_target_num"]').val('');
+        $('#sectionWrap input[name="page_target_num"]').focus();
+        return;
+
+      }
+        if(keyWord != null && search != null){
+            location.href = '/board/freeBoardListForm?pageNum='+targetPageNum+'&keyWord='+keyWord +"&search="+search;
+        } else {
+            location.href = '/board/freeBoardListForm?pageNum='+targetPageNum;
+        }
+    });
+
+    $(document).on('click', "button.bt_search", function (){
+        console.log('bt_search BUTTON CLICK HANDLER');
+
+        var search_no = $('select[name="search_no"]').find(":selected").val();
+        var keyWord = $("#keyword").val();
+        var search;
+
+        if(search_no == 1){
+            search = "title";
+        } else if (search_no == 2){
+            search = "content";
+        } else if (search_no == 3){
+            search = "name";
+        }
+
+        if(keyWord != null && search != null){
+            location.href = '/board/freeBoardListForm?keyWord='+keyWord +"&search="+search;
+        } else {
+            location.href = '/board/freeBoardListForm';
+        }
+    });
+
+  }
+</script>

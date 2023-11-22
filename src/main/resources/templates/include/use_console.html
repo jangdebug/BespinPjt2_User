@@ -1,0 +1,12 @@
+<script th:fragment="js" type="text/javascript">
+	
+	var useConsole = true;
+	
+	if(!useConsole) {
+		console = {};
+		console.log = function(){};
+		console.warn = function(){};
+		console.error = function(){};
+	}
+	
+</script>

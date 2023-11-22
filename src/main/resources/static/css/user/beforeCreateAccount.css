@@ -1,0 +1,104 @@
+/* 전체 페이지 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    margin-top: 80px;
+}
+
+/* 섹션 스타일 */
+#sectionWrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 9px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 로고 스타일 */
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    margin: 20px auto;
+    max-width: 150px;
+}
+
+/* 회원가입 선택 폼 스타일 */
+.beforeCreateAccountForm {
+    width: 95%;
+    margin: 0px auto;
+    display: flex;
+    align-items: center; /* 이미지 밑에 버튼을 가운데 정렬 */
+}
+
+.studentOrParents {
+    margin: 0px auto;
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    background-color: #f4f9ff;
+    border: #3c3c3c;
+    border-radius: 9px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    flex-direction: column; /* 버튼을 이미지 아래에 배치 */
+    align-items: center; /* 이미지와 버튼을 가운데 정렬 */
+}
+
+.studentOrParents:hover {
+    border: 2px solid #3085d6;
+    box-sizing: border-box;
+}
+
+.studentOrParents img {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    width: 150px;
+}
+.studentAccountBtn,
+.parentsAccountBtn {
+    width: 180px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    color: #fff;
+    font-width: bold;
+    font-size: 1.2em;
+    text-align: center;
+    height: 35px;
+    line-height: 35px;
+}
+
+.studentAccountBtn {
+    background-color: #45a5f1;
+}
+
+.parentsAccountBtn {
+    background-color: #ff842a;
+}
+
+.accountBtn:hover{
+    text-decoration-line: none;
+}
+
+    /* 비밀번호 찾기, 아이디 찾기, 회원가입 링크 스타일 */
+.findMember {
+    text-align: center;
+    font-size: 0.9em;
+    color: #3085d6;
+    margin-top: 20px;
+}
+
+.findMember a {
+    text-decoration: none;
+    color: #036bb4;
+    margin: 0 10px;
+}
+
+.findMember a:hover {
+    text-decoration: underline;
+}

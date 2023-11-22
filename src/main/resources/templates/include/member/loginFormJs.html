@@ -1,0 +1,120 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+  $(document).ready(function() {
+    console.log('DOCUMENT READY!!');
+
+      initEvent();
+
+  });
+
+  function initEvent() {
+    console.log("init CALLED!!!");
+
+    let isStudent = true;
+
+    $("#sectionWrap div.loginForm  input:radio[name='student']").on('click', function (){
+        console.log("student CLICK HANDLER!!!");
+
+        $("input:radio[name='student']").prop('checked', true);
+        $("input:radio[name='parents']").prop('checked', false);
+
+        isStudent = true;
+    });
+
+    $("#sectionWrap div.loginForm input:radio[name='parents']").on('click', function (){
+        console.log("parents CLICK HANDLER!!!");
+
+        $("input:radio[name='student']").prop('checked', false);
+        $("input:radio[name='parents']").prop('checked', true);
+
+        isStudent = false;
+    });
+
+    $("#sectionWrap div.loginForm input[value='로그인']").on('click', function (){
+        console.log("login CLICK HANDLER!!!");
+        loginConfirm(isStudent);
+    });
+
+}
+
+  function loginConfirm(isStudent) {
+      console.log("loginConfirm() CALLED!!!");
+
+      let form = document.loginForm;
+
+      if(form.id.value == ''){
+          alert("아이디를 입력해주세요!");
+          form.id.focus();
+      } else if(form.password.value == ''){
+          alert("비밀번호를 입력해주세요!");
+          form.password.focus();
+      } else {
+          ajax_loginConfirm(form.id.value, form.password.value, isStudent);
+
+      }
+
+  }
+
+
+
+// AJAX START
+  function ajax_loginConfirm(id, password, isStudent){
+      console.log("ajax_loginConfirm() CALLED!!!");
+
+      let formData = new FormData($("form.loginForm")[0]);
+      formData.append("id", id);
+      formData.append("password", password);
+      console.log(id + ":"+ password);
+
+
+      let goToUrl = "";
+      if(isStudent){
+          goToUrl = "/user/student/loginConfirm";
+      } else {
+          goToUrl = "/user/parents/loginConfirm";
+      }
+
+      $.ajax({
+          url: goToUrl,
+          type: 'POST',
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function(data) {
+              console.log('AJAX SUCCESS - ajax_loginConfirm()');
+
+              $("div.loginConfirmResult").children().remove();
+
+              let result = data.result;
+              if(result){
+                  alert("성공적으로 로그인되었습니다.");
+
+                  location.href= "/";
+
+              } else {
+                  let appendTag = "<span>아이디와 비밀번호가 맞지 않습니다!</span>";
+                  if(data.fail_count >= 5 ){
+                      appendTag += "<br><span>비밀번호가 5회 이상 틀렸습니다. 비밀번호 찾기를 통해 새 비밀번호를 받아주세요</span>";
+                  }
+
+                  $("div.loginConfirmResult").append(appendTag);
+              }
+
+
+          },
+          error: function(data) {
+              console.log('AJAX ERROR - ajax_loginConfirm()');
+
+              $("div.loginConfirmResult").children().remove();
+
+              let appendTag = "<span>서버 에러입니다. 다시 시도해주세요</span>";
+
+              $("div.loginConfirmResult").append(appendTag);
+
+          }
+      });
+
+  }
+
+
+</script>

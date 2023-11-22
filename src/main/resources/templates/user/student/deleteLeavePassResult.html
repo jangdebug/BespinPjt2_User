@@ -1,0 +1,20 @@
+
+  <title th:replace="~{include/title.html::title}">
+
+  </title>
+  <script th:inline="javascript">
+
+    console.log('delete LeavePass result');
+
+    let result = [[${result}]];
+
+    if (result == 1 ) {
+      alert('정상적으로 삭제 되었습니다.');
+    } else {
+      alert('정상적으로 삭제 되지않았습니다.');
+    }
+
+    location.href="/user/student/leavePassList";
+
+
+  </script>

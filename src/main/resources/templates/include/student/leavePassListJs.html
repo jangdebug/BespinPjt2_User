@@ -1,0 +1,258 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+    $(document).ready(function () {
+        console.log('DOCUMENT READY!!');
+        setPage();
+
+        initEvent();
+
+    });
+
+
+    function initEvent() {
+        console.log("initEvent() CALLED!!!");
+
+        $("a.deleteLeavePass").on('click', function () {
+            console.log("deleteLeavePass CLICK HANDLER()!!!!");
+
+            let no = $(this).data("no");
+
+            location.href = "/user/student/deleteLeavePass?no=" + no;
+
+        });
+        $(document).on("click", "#sectionWrap div.pageWrap div.pageNumber a", function (e) {
+            console.log("page CLICK HANDLER!!");
+
+            let pageNum = $(this).data('pagenum');
+
+            location.href = "/user/student/leavePassList?pageNum=" + pageNum;
+        });
+        // 페이지 번호 입력 시
+        $(document).on('click', '#sectionWrap > div.page_wrap > div.page_goto a.goto_page_btn', function() {
+            console.log('page_goto BUTTON CLICK HANDLER');
+
+            let targetPageNum = $('#sectionWrap input[name="page_target_num"]').val();
+            let totalPageNum = $('#sectionWrap span.page_total_num').text();
+
+            let keyWord = [[${keyWord}]];
+            let search = [[${search}]];
+
+            if (targetPageNum == '' || targetPageNum == ' ' || targetPageNum == null) {
+                alert('이동하고자 하는 페이지 숫자를 입력하세요!');
+                $('#sectionWrap input[name="page_target_num"]').focus();
+                return;
+
+            } else if (parseInt(targetPageNum) < 1) {
+                alert('1페이지 미만은 존재하지 않습니다!');
+                $('#sectionWrap input[name="page_target_num"]').val('');
+                $('#sectionWrap input[name="page_target_num"]').focus();
+                return;
+
+            } else if (parseInt(targetPageNum) > parseInt(totalPageNum)) {
+                alert(totalPageNum + '을(를) 초과할 수 없습니다!');
+                $('#sectionWrap input[name="page_target_num"]').val('');
+                $('#sectionWrap input[name="page_target_num"]').focus();
+                return;
+
+            }
+                location.href = '/user/student/board/freeBoardListForm?pageNum='+targetPageNum;
+        });
+    }
+
+    function setPage() {
+        console.log('setPage() CALLED!!');
+
+        let pageMakerDto = [[${pageMakerDto}]];
+
+        $("#sectionWrap  div.pageWrap div.pageNumber").children().remove();
+
+
+        if (pageMakerDto.prev) {
+            $("#sectionWrap  div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum = '" + (pageMakerDto.startPage - 1) + "'>PRE</a>");
+        }
+
+        /* 처음 페이지 */
+        if (pageMakerDto.criteria.pageNum > 10) {
+            $("#sectionWrap div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum = '1' " + "'>1</a><span>...</span>");
+        }
+
+        /* 페이지 넘버링 */
+        for (let p = parseInt(pageMakerDto.startPage); p <= parseInt(pageMakerDto.endPage); p++) {
+            $("#sectionWrap  div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum='" + p + "'>" + p + "</a>");
+        }
+
+        /* 페이지 하이라이트 */
+        $("#section_wrap > div.page_wrap > div.pageNumber a[data-pagenum=" + pageMakerDto.criteria.pageNum + "]").addClass('selectedPageNum');
+
+        /* 다음 페이지 */
+        if (pageMakerDto.next) {
+            $("#sectionWrap  div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum = '" + (pageMakerDto.endPage + 1) + "'>NEX</a>");
+        }
+
+        /* 전체 페이지*/
+        $('#sectionWrap  div.pageWrap > div.page_goto > span.page_total_num').text(pageMakerDto.totalPage);
+
+    }
+
+    function commonAppend(leavePassDtos){
+
+        let appendTag = "";
+        $("#sectionWrap  table > tbody").children().remove();
+        for (let i = 0; i < leavePassDtos.length; i++) {
+            appendTag += "<tr>";
+            appendTag += "<td>" + leavePassDtos[i].student_name + "</td>";
+            appendTag += "<td>" + leavePassDtos[i].student_id + "</td>";
+            appendTag += "<td>" + leavePassDtos[i].student_grade + "</td>";
+            appendTag += "<td>" + leavePassDtos[i].dormitory + "</td>";
+            appendTag += "<td>" + leavePassDtos[i].content + "</td>";
+            appendTag += "<td>" + leavePassDtos[i].start_date + "</td>";
+            appendTag += "<td>" + leavePassDtos[i].end_date + "</td>";
+            appendTag += "<td><a class='modifyLeavePass' href='#none' data-no=" + leavePassDtos[i].no + ">수정</a></td>";
+            if (leavePassDtos[i].admin_approval == 1) {
+                appendTag += "<td>승인완료</td>";
+            } else {
+                appendTag += "<td><a class='approveLeavePass' href='#none' data-no=" + leavePassDtos[i].no + ">승인</a></td>";
+            }
+            if (leavePassDtos[i].comeback_date == '1000-01-01 00:00:00') {
+                appendTag += "<td><a class='sendMessage' href='#none' data-no=" + leavePassDtos[i].no + ">복귀</a></td>";
+            } else {
+                appendTag += "<td>복귀완료</td>";
+            }
+            appendTag += "</tr>";
+        }
+        $("#sectionWrap table > tbody").append(appendTag);
+    }
+
+
+    // AJAX START
+
+    function ajax_approveLeavePass(no) {
+        console.log("ajax_approveLeavePass() CALLED!!!");
+
+        let pageMakerDto = [[${pageMakerDto}]];
+
+        msgDto = {
+            'no': no,
+            'pageNum': pageMakerDto.criteria.pageNum,
+        }
+
+        $.ajax({
+            url: '/leavePass/approveLeavePass',
+            type: 'GET',
+            data: msgDto,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_approveLeavePass()');
+
+                let leavePassDtos = data.leavePassDtos;
+                commonAppend(leavePassDtos);
+                initEvent();
+
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_approveLeavePass()');
+            }
+        });
+    }
+
+    function ajax_sendComebackMessage(no) {
+        console.log("ajax_sendMessage() CALLED!!!");
+
+        let leavePassDtos = [[${leavePassDtos}]];
+        let pageMakerDto = [[${pageMakerDto}]];
+
+        let j= 0;
+        for (let i = 0; i < leavePassDtos.length; i++){
+            j++;
+            if(leavePassDtos[i].no == no){
+                break;
+            }
+        }
+
+        if(leavePassDtos[j-1].parent_phone != null){
+            let to = leavePassDtos[j-1].parent_phone;
+            let student_name = leavePassDtos[j-1].student_name;
+            let school_name = leavePassDtos[j-1].school_name;
+            let content = "[" + school_name + "] \n" + "[" + student_name + "] 님이 안전하게 복귀했습니다.";
+
+            let formData = new FormData();
+            formData.append("no", no);
+            formData.append("to", to);
+            formData.append("content", content);
+
+            $.ajax({
+                url: '/sms/sendComebackMessage',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    console.log('AJAX SUCCESS - ajax_sendComebackMessage()');
+
+                    let response = data.response;
+
+                    if (response.statusCode == '202') {
+                        alert("메시지를 발송하였습니다.");
+                        let leavePassDtos = data.leavePassDtos;
+                        commonAppend(leavePassDtos);
+                        initEvent();
+                    } else {
+                        alert("메시지 전송에 실패하였습니다.");
+                    }
+
+                },
+                error: function (data) {
+                    console.log('AJAX ERROR - ajax_sendComebackMessage()');
+                }
+            });
+        } else {
+            let school_no = leavePassDtos[j-1].school_no;
+            ajax_updateComebackDate(no, school_no, pageMakerDto.criteria.pageNum);
+        }
+
+    }
+
+    function ajax_allSendComebackMessages() {
+        console.log("ajax_allSendComebackMessages() CALLED!!!");
+
+        $.ajax({
+            url: '/sms/allSendComebackMessages',
+            type: 'GET',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_allSendComebackMessages()');
+                alert("메시지를 발송하였습니다.");
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_allSendComebackMessages()');
+            }
+        });
+    }
+
+    function ajax_updateComebackDate(no, school_no, pageNum){
+        console.log("ajax_updateComebackDate() CALLED!!!");
+
+        msgDto= {
+            'no': no,
+            'school_no': school_no,
+            'pageNum': pageNum,
+        }
+
+        $.ajax({
+            url: '/leavePass/modifyComebackDateConfirm',
+            type: 'GET',
+            data: msgDto,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_allSenComebackdMessages()');
+                alert("보호자가 아직 가입하지 않아 문자 발송할 수 없습니다!");
+                let leavePassDtos = data.leavePassDtos;
+                commonAppend(leavePassDtos);
+                initEvent();
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_allSenComebackdMessages()');
+            }
+        });
+    }
+</script>

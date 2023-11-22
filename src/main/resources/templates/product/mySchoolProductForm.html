@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+  <link rel="stylesheet" th:href="@{/css/product/mySchoolProductForm.css}">
+
+  <script th:replace="~{include/common_js.html::jquery_cdn}" type="text/javascript"></script>
+  <script th:replace="~{include/product/allProduct_js.html::js}" type="text/javascript"></script>
+  <script th:replace="~{include/product/selectProduct_js.html::js}" type="text/javascript"></script>
+
+  <script th:src="@{/js/product/findProduct.js}" type="text/javascript"></script>
+  <script th:src="@{/js/product/registProductForm.js}" type="text/javascript"></script>
+  <script th:src="@{/js/utils/transcation_number.js}" type="text/javascript"></script>
+
+</head>
+<body>
+  <header th:replace="~{include/headerNavFooter.html::header}">
+  </header>
+
+  <div id="wrap">
+    <nav th:replace="~{include/headerNavFooter.html::nav}">
+    </nav>
+    <section>
+      <div id="sectionWrap">
+        <div class="product_info_wrap">
+          <div class="title">
+            등록 상품 리스트 (<span class="school_name" th:text="${session.loginedStudentDto.school_name}"></span>)
+          </div>
+          <br>
+          <div id="selectProduct" style="display: none;">
+            <table>
+
+            </table>
+          </div>
+        </div>
+        <div class="bucket_wrap">
+          <div id="registProductForm" style="display: none;">
+            <input type="text" name="product_name" placeholder="INPUT PRODUCT NAME"><br><br>
+            <div class="btn_container">
+              <input type="button" value="상품 전체 보기" onclick="allfindProduct();">
+              <input type="button" value="상품 찾기" onclick="findProduct();">
+            </div>
+          </div>
+
+          <div id="checkedProduct" style="display: none;">
+            <ul>
+
+            </ul>
+          </div>
+
+          <div id="priceSum" style="display: none;">
+            <span id="sum" data-sum="0"> 합계 : 0 원 </span>
+          </div>
+
+          <div id="registProduct" style="display: none;">
+            <form th:action="@{/product/registProductConfirm}" name="registProductForm" method="post">
+              <input type="hidden" name="zip_code" th:value="${session.loginedStudentDto.school_zip_code}">
+              <input type="hidden" name="id" th:value="${session.loginedStudentDto.id}">
+              <input type="hidden" name="sum" th:value="0">
+
+              <input type="button" value="장바구니 담기" onclick="registProductConfirm();">
+            </form>
+          </div>
+        </div>
+        <!--   등록 가능 상품이 없다면 기존 none 처리한 해당 div를 block처리   -->
+        <div id="noProduct" style="display: none;">등록 가능한 상품이 없습니다</div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

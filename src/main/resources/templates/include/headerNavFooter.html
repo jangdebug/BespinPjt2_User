@@ -1,0 +1,120 @@
+<header th:fragment="header">
+    <div id="headerWrap">
+        <div class="headerContainer">
+                <a th:href="@{/}">
+                    <img src="/imgs/no_background_logo_test.png">
+                </a>
+<!--                <div class="schoolName" th:if="${session.loginedStudentDto != null}">-->
+<!--                    <span th:text="${session.loginedStudentDto.school_name}"></span>-->
+<!--                </div>-->
+                <div class="headerMenuBar">
+                    <label class="headerRadio" for="home">
+                        <input type="radio" id="home" name="headerMenu" value="홈">
+                        <span class="menuBar">홈</span>
+                    </label>
+                    <label class="headerRadio" for="notice">
+                        <input type="radio" id="notice" name="headerMenu" value="공지사항">
+                        <span class="menuBar">공지사항</span>
+                    </label>
+                    <label class="headerRadio" for="leavePass">
+                        <input type="radio" id="leavePass" name="headerMenu" value="외박신청">
+                        <span class="menuBar">외박신청</span>
+                    </label>
+                    <label class="headerRadio" for="shop">
+                        <input type="radio" id="shop" name="headerMenu" value="매점">
+                        <span class="menuBar">매점</span>
+                    </label>
+                    <label class="headerRadio" for="board">
+                        <input type="radio" id="board" name="headerMenu" value="소통공간">
+                        <span class="menuBar">소통공간</span>
+                    </label>
+                    <label class="headerRadio" for="myInfo">
+                        <input type="radio" id="myInfo" name="headerMenu" value="내 정보">
+                        <span class="menuBar">내 정보</span>
+                    </label>
+                </div>
+                <div class="memberWrap" th:if="${session.loginedStudentDto == null && session.loginedParentsDto == null}">
+                    <a th:href="@{/user/member/loginForm}">로그인</a>
+                </div>
+                <div class="memberWrap" th:if="${session.loginedStudentDto != null || session.loginedParentsDto != null}">
+                    <a th:if="${session.loginedStudentDto != null}" th:href="@{/user/student/logoutConfirm}">로그아웃</a>
+                    <a th:if="${session.loginedParentsDto != null}" th:href="@{/user/parents/logoutConfirm}">로그아웃</a>
+                </div>
+        </div>
+    </div>
+    <hr>
+</header>
+<script>
+    // 라디오 버튼 클릭 시 페이지 이동 처리
+    document.querySelectorAll(".headerRadio input[type='radio']").forEach(function(radio) {
+        radio.addEventListener("change", function() {
+            // 라디오 버튼의 값을 value에 할당
+            var value = this.value;
+
+            // 이동할 URL을 설정
+            var url;
+
+            switch (value) {
+                case "홈":
+                    url = "/";                          // 홈 페이지 URL
+                    break;
+                case "공지사항":
+                    url = "/notice/noticeListForm";     // 게시판 페이지 URL
+                    break;
+                case "외박신청":
+                    url = "/leavePass";                 // 게시판 페이지 URL
+                    break;
+                case "매점":
+                    url = "/shop";                      // 게시판 페이지 URL
+                    break;
+                case "소통공간":
+                    url = "/board/freeBoardListForm";   // 소통공간 페이지 URL
+                    break;
+                case "내 정보":
+                    url = "/myInfo";                    // 게시판 페이지 URL
+                    break;
+
+                default:
+                    url = "/";                          // 기본 페이지 URL
+            }
+
+            // 페이지 이동
+            window.location.href = url;
+        });
+    });
+</script>
+
+<nav th:fragment="nav">
+    <div id="navWrap"> &nbsp;&nbsp;
+        <table>
+            <thead>
+            <tr>
+                <th th:text="${session.loginedStudentDto.school_name}">
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <a th:href="@{/notice/noticeListForm}">
+                        공지사항
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a th:href="@{/board/freeBoardListForm}">
+                        자유게시판
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</nav>
+
+<footer th:fragment="footer">
+    <div id="footerWrap">
+        Copyright © ONE-TEAM Corp. All Rights Reserved.
+    </div>
+</footer>

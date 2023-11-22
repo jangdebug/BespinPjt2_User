@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oneteam.dormease.notice.INoticeMapper">
+
+    <select id="selectAllNoticeContent" parameterType="Map" resultType="NoticeDto">
+        SELECT
+        n.*,
+        a.name
+        AS
+        admin_name
+        FROM
+        notice_board n
+        JOIN
+        admin a
+        ON
+        n.admin_no = a.no
+        WHERE
+        n.school_no = #{schoolNo}
+        AND
+        n.status = 1
+        <if test="keyWord != null">
+            <if test='!search.equals("name")'>
+                AND n.${search} LIKE CONCAT('%', #{keyWord}, '%')
+            </if>
+            <if test='search.equals("name")'>
+                AND a.name LIKE CONCAT('%', #{keyWord}, '%')
+            </if>
+        </if>
+        ORDER BY status DESC, no DESC
+        LIMIT
+        #{pageMakerDto.criteria.skip}, #{pageMakerDto.criteria.amount}
+
+    </select>
+
+    <select id="selectCountOfNotice" parameterType="Map" resultType="Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        notice_board n
+        JOIN
+        admin a
+        ON
+        n.admin_no = a.no
+        WHERE
+        n.school_no = #{schoolNo}
+        AND
+        n.status = 1
+        <if test="keyWord != null">
+            <if test='!search.equals("name")'>
+                AND n.${search} LIKE CONCAT('%', #{keyWord}, '%')
+            </if>
+            <if test='search.equals("name")'>
+                AND a.name LIKE CONCAT('%', #{keyWord}, '%')
+            </if>
+        </if>
+    </select>
+
+    <select id="selectCurrentBoardNo" parameterType="Integer">
+
+        SELECT
+            no
+        from
+            notice_board
+        ORDER BY no DESC
+            LIMIT 1
+
+    </select>
+
+    <select id="selectDetailContent" parameterType="int">
+
+        SELECT n.*,
+               a.name
+                   AS
+                   admin_name
+        FROM notice_board n
+                 INNER JOIN
+             admin a
+             ON
+                 n.admin_no = a.no
+        WHERE n.no = #{no}
+          AND n.status = 1
+
+    </select>
+
+    <select id="selectUploadedFiles" parameterType="int">
+
+        SELECT *
+        FROM notice_upload_file
+        WHERE notice_no = #{no}
+        ORDER BY no ASC
+
+    </select>
+
+    <select id="selectUploadedFilesForModify" parameterType="int">
+
+        SELECT *
+        FROM notice_upload_file
+        WHERE notice_no = #{no}
+        ORDER BY no ASC
+
+    </select>
+
+    <update id="updateContentHit" parameterType="Integer">
+
+        UPDATE
+            notice_board
+        SET hit = hit + 1
+        WHERE
+            no = #{no}
+
+    </update>
+
+    <update id="updateContent" parameterType="com.oneteam.dormease.board.BoardDto">
+
+        UPDATE
+            notice_board
+        SET title    = #{title},
+            content  = #{content},
+            mod_date = #{mod_date}
+        WHERE
+            no = #{no}
+
+    </update>
+
+    <update id="updateContentForDelete" parameterType="Integer">
+
+        UPDATE
+            notice_board
+        SET status = 0
+        WHERE
+            no = #{no}
+
+    </update>
+
+</mapper>

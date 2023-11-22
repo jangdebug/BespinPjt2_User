@@ -1,0 +1,104 @@
+.body {
+    box-sizing: border-box;
+    background-color: #f2f2f2;
+}
+
+/* 섹션 스타일 */
+#sectionWrap {
+    max-width: 450px;
+    margin: 10px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 9px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    padding-bottom: 100px;
+}
+
+/* 폼 제목, 로고 스타일 */
+.logo {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.logo img {
+    max-width: 100px;
+}
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient( to bottom, #0593fc, #036bb4);
+    color: transparent;
+    -webkit-background-clip: text, border;
+    margin-bottom: 10px;
+}
+
+/* 입력 박스 스타일 */
+.room_no_box,
+.student_id_box,
+.student_name_box,
+.student_grade_box,
+.leave_out_reason,
+.date_of_leaving{
+    width: 100%;
+    margin-bottom: 15px;
+}
+.room_no_box > input[name='dormitory'],
+.student_id_box > input[name='student_id'],
+.student_name_box > input[name='student_name'],
+.student_grade_box > input[name='student_grade'],
+.leave_out_reason > input[name='content'],
+.date_of_leaving > input[name='start_date']{
+    width: 95%;
+}
+
+/* 레이블 스타일 */
+.room_no_box > div,
+.student_id_box > div,
+.student_name_box > div,
+.student_grade_box > div,
+.leave_out_reason > div,
+.date_of_leaving > div {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* 입력 필드 스타일 */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+input[type='date'] {
+    border: none;
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 9px;
+    text-align: center;
+    font-size: 100%;
+    margin-bottom: 20px;
+}
+
+/* 버튼 스타일 */
+.btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+input[type="button"] {
+    align-content: center;
+    width: 30%;
+    height: 40px;
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #0593fc, #036bb4);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+}
+

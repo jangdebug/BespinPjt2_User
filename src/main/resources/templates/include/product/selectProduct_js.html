@@ -1,0 +1,204 @@
+<script th:fragment="js" type="text/javascript">
+
+  $(document).ready(function(){
+    console.log("selectProduct_js READY!!");
+    console.log("This Script");
+
+      select_product();
+      remove_product();
+  });
+
+
+
+  function select_product(){
+      console.log("select_product()");
+
+      $(document).on('click', '#selectProduct table tr td a.add_product', function(){
+          let productName = $(this).data('product-name')
+          let productName_trim = productName.replace(/\s+/g, '');   //id값으로 사용되는 곳을 위해 띄워쓰기는 제거
+          let productPrice = $(this).data('product-price');
+          let img = $(this).data('img');
+
+          if(!is_exist_name(productName)){
+              let inputTag = "<input type='hidden' name='name' ";
+              inputTag += "value='" + productName +"'>";
+              inputTag += "<input type='hidden' name='price' ";
+              inputTag += "value='" + productPrice +"'>";
+              inputTag += "<input type='hidden' name='cnt' ";
+              inputTag += "value='1'>";
+              inputTag += "<input type='hidden' name='img' ";
+              inputTag += "value='" + img +"'>";
+              $("#registProduct form input[type='hidden']:last").after(inputTag);
+
+              let appendTag = "<li id='" + productName_trim + "' class='addProduct'>";
+              appendTag += '<div class="productImage">';
+              appendTag += '<img width="50" height="50" src="/dormEaseUploadImg/admin/product/' + img + '">';
+              appendTag += '</div>';
+              appendTag += '<div class="productInfo">';
+              appendTag += '<div class="topRow">';
+              appendTag += '<span class="productName">' + '상품 명 : ' + productName + '</span>';
+              appendTag += '<span class="cnt" data-cnt="0">' + '수량 : 0' + '</span>';
+              appendTag += '<input type="button" value="+" onclick="upCountProduct(\'' + productName + '\', \'' + productName_trim + '\')"> &nbsp;&nbsp;';
+              appendTag += '<input type="button" value="-" onclick="downCountProduct(\'' + productName + '\', \'' + productName_trim + '\')">';
+              appendTag += '</div>';
+              appendTag += '<div class="bottomRow">';
+              appendTag += '<span class="productPrice" data-price="' + productPrice + '" data-prices="' + productPrice + '">' + '가격 : ' + productPrice + '</span>';
+              appendTag += "<span><a href='#none' class='remove_product'>삭제</a></span>";
+              appendTag += '</div>';
+              appendTag += '</div>';
+              appendTag += '</li>';
+
+              $("#checkedProduct ul").append(appendTag);
+
+              upCountProduct(productName, productName_trim);
+              alert('새로운 상품을 추가하였습니다.');
+          }
+          else{
+              upCountProduct(productName, productName_trim);
+              alert('기존 상품을 추가하였습니다.');
+          }
+      })
+  }
+
+  function is_exist_name(name){
+      console.log('is_exist_name');
+
+      //exist_id !== null은
+      // exist_id null이 아니라면
+      // 해당 id를 가진 요소가 존재한다는 것을 의미
+      let exist_id = document.getElementById(name);
+      return exist_id !== null;
+  }
+
+  function upCountProduct(name, name_trim){
+      console.log('upCountProduct()');
+
+      //사용자에게 보여지는 리스트
+      let $priceSpan = $("#" + name_trim + " span.productPrice"); // 해당 span.price 요소 선택
+      let $cntSpan = $("#" + name_trim + " span.cnt");            // 해당 span.cnt 요소 선택
+      let $sumSpan = $("#priceSum #sum");                    // 합계
+
+      let priceValue = $priceSpan.data("price");            // 현재 data-price 값을 가져옴
+      let cntValue = $cntSpan.data("cnt");                  // 현재 data-cnt 값을 가져옴
+      let sum = $sumSpan.data("sum");                       // 현재 data-sum 값을 가져옴
+
+      cntValue += 1;                              // cntValue 값을 1 증가시킴
+      if(cntValue > 10) {
+          alert('10개 이상은 불가능합니다.');
+      }
+      else{
+          //sum은 더해줄 때마다 가격이 바뀌면 되기 때문에 가장 먼저 계산
+          sum += priceValue;
+          $sumSpan.data("sum", sum);             // data-sum 속성 값을 업데이트
+          $sumSpan.attr("data-sum", sum);        // 실제 HTML 요소의 data-sum 속성 값을 업데이트
+          $sumSpan.text('합계 : ' + sum);        // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+
+          priceValue = cntValue * priceValue;
+
+          $cntSpan.data("cnt", cntValue);             // data-cnt 속성 값을 업데이트
+          $cntSpan.attr("data-cnt", cntValue);        // 실제 HTML 요소의 data-cnt 속성 값을 업데이트
+          $cntSpan.text('수량 : ' + cntValue);        // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+
+          $priceSpan.data("prices", priceValue);              // data-priceSum 속성 값을 업데이트
+          $priceSpan.attr("data-prices", priceValue);         // 실제 HTML 요소의 data-priceSum 속성 값을 업데이트
+          $priceSpan.text('가격 : ' + priceValue);           // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+
+          //서버로 보낼 데이터
+          $("input[name='sum']").val(sum);
+
+          let targetInput = $("input[value='" + name + "']");
+          let nextInputs = targetInput.nextAll("input");
+
+          let priceInput = nextInputs.eq(0); // 첫 번째 <input>
+          let cntInput = nextInputs.eq(1); // 두 번째 <input>
+
+          priceInput.val(priceValue);
+          cntInput.val(cntValue);
+      }
+
+  }
+
+  function downCountProduct(name, name_trim){
+      console.log('downCountProduct()');
+
+      //사용자에게 보여지는 리스트
+      let $priceSpan = $("#" + name_trim + " span.productPrice"); // 해당 span.price 요소 선택
+      let $cntSpan = $("#" + name_trim + " span.cnt");            // 해당 span.cnt 요소 선택
+      let $sumSpan = $("#priceSum #sum");                    // 합계
+
+      let priceValue = $priceSpan.data("price");            // 현재 data-price 값을 가져옴
+      let cntValue = $cntSpan.data("cnt");                  // 현재 data-cnt 값을 가져옴
+      let sum = $sumSpan.data("sum");                       // 현재 data-sum 값을 가져옴
+
+      cntValue -= 1;                              // cntValue 값을 1 증가시킴
+      if(cntValue <= 0){
+          alert('1개 미만은 불가능합니다.')
+      }else{
+          //sum은 빼줄 때마다 가격이 바뀌면 되기 때문에 가장 먼저 계산
+          sum -= priceValue;
+          $sumSpan.data("sum", sum);             // data-sum 속성 값을 업데이트
+          $sumSpan.attr("data-sum", sum);        // 실제 HTML 요소의 data-sum 속성 값을 업데이트
+          $sumSpan.text('합계 : ' + sum);        // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+
+          priceValue = cntValue * priceValue;
+
+          $cntSpan.data("cnt", cntValue);             // data-cnt 속성 값을 업데이트
+          $cntSpan.attr("data-cnt", cntValue);        // 실제 HTML 요소의 data-cnt 속성 값을 업데이트
+          $cntSpan.text('수량 : ' + cntValue);        // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+
+          $priceSpan.data("prices", priceValue);              // data-priceSum 속성 값을 업데이트
+          $priceSpan.attr("data-prices", priceValue);         // 실제 HTML 요소의 data-priceSum 속성 값을 업데이트
+          $priceSpan.text('가격 : ' + priceValue);           // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+
+          //서버로 보낼 데이터
+          $("input[name='sum']").val(sum);
+
+          let targetInput = $("input[value='" + name + "']");
+          let nextInputs = targetInput.nextAll("input");
+
+          let priceInput = nextInputs.eq(0); // 첫 번째 <input>
+          let cntInput = nextInputs.eq(1); // 두 번째 <input>
+
+          priceInput.val(priceValue);
+          cntInput.val(cntValue);
+
+      }
+  }
+
+  function remove_product(){
+      console.log("remove_product()");
+
+      $(document).on('click', '#checkedProduct ul li  a.remove_product', function(){
+
+          //사용자 리스트
+          let removeCheckedProduct = $(this).closest('li');             //가장 가까운 li
+          let findSpan = removeCheckedProduct.find('span');             //li의 모든 span
+          let prices = findSpan.filter('.productPrice').data("prices"); //productPrice 클래스를 가진 span의 prices
+
+          let $sumSpan = $("#priceSum #sum");                           // 합계
+          let sum = $sumSpan.data("sum");                               // 현재 data-sum 값을 가져옴
+          sum -= prices;
+          $sumSpan.data("sum", sum);                                    // data-sum 속성 값을 업데이트
+          $sumSpan.attr("data-sum", sum);                               // 실제 HTML 요소의 data-sum 속성 값을 업데이트
+          $sumSpan.text('합계 : ' + sum);                                // span 요소의 텍스트를 업데이트하여 변경된 값을 표시
+          removeCheckedProduct.remove();
+
+          //서버용 폼 데이터
+          $("input[name='sum']").val(sum);                              // input sum 업데이트
+          let removeRegistProduct = $(removeCheckedProduct[0]).prop("id");
+          let targetInput = $("#registProduct form input[value='" + removeRegistProduct + "']");    //부모 <input>
+          let nextInputs = targetInput.nextAll("input");
+          let cntInput = nextInputs.eq(0); // 첫 번째 <input>
+          let priceInput = nextInputs.eq(1); // 두 번째 <input>
+          let imgInput = nextInputs.eq(2); // 세 번째 <input>
+
+          targetInput.remove();
+          cntInput.remove();
+          priceInput.remove();
+          imgInput.remove();
+
+          alert('삭제하였습니다.');
+      })
+  }
+
+</script>

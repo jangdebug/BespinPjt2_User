@@ -1,0 +1,21 @@
+
+  <title th:replace="~{include/title.html::title}">
+
+  </title>
+  <script th:inline="javascript">
+
+    console.log('leavePassConfirm result');
+
+    let result = [[${result}]];
+
+    if (result < 0 ) {
+      alert('외박 신청이 정상적으로 되지 않았습니다.');
+      location.href="/user/student/leaveOutForm";
+    } else {
+      alert('정상적으로 외박 신청이 되었습니다.');
+      location.href="/user/student/leavePassList";
+
+    }
+
+
+  </script>

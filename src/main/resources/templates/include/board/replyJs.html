@@ -1,0 +1,81 @@
+<script th:fragment="js" type="text/javascript">
+    $(document).ready(function (){
+        console.log("DOCUMENT READY!!")
+
+        init_events();
+    })
+
+    function init_events() {
+        console.log('init_events() CALLED!!');
+
+        // 댓글 작성 기능
+        $(document).on('click', '.write_reply_container input[type=button]', function(e) {
+            console.log('reply CLICKED HANDLER!!');
+
+            let reply = $('div.write_reply_container input[name="comment"]').val();
+            let board_no = $('div.content_list input[name="board_no"]').val();
+
+            console.log('reply: ' + reply);
+            console.log('board_no: ' + board_no);
+
+            if (reply.trim() != '')
+                ajax_registReply(board_no, reply.trim());
+        });
+    }
+
+    function listUpReplies(replyDtos) {
+        console.log('listUpReplies() CALLED!!');
+
+        $('div.reply_list > div').children().remove();
+
+        for (let i = 0; i < replyDtos.length; i++) {
+            let appendTag = '';
+            appendTag += '<span>';
+            appendTag += '<div>작성자 : '+replyDtos[i].student_name+'</div>';
+            appendTag += '<div>'+replyDtos[i].mod_date.substring(0, 10)+'</div>';
+            appendTag += '</span>';
+            appendTag += '<span>ㄴ '+ replyDtos[i].comment +'</span>';
+
+            $('div.reply_list > div').append(appendTag);
+        }
+    }
+
+    function ajax_registReply(board_no, reply) {
+        console.log('ajax_registReply() CALLED!!');
+
+        let replyDto = {
+            'board_no': board_no,
+            comment: reply,
+        };
+
+        console.log(replyDto.comment);
+
+        $.ajax({
+            url: '/reply/registReply',
+            type: 'POST',
+            data: JSON.stringify(replyDto),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data) {
+                console.log('AJAX SUCCESS - ajax_registReply()');
+
+                alert("댓글이 정상 등록 되었습니다.");
+
+                listUpReplies(data.replyDtos);
+
+            },
+            error: function(data) {
+                console.log('AJAX ERROR - ajax_registReply()');
+
+                alert("댓글 등록이 실패했습니다.");
+
+            },
+            complete: function(data) {
+                console.log('AJAX COMPLETE - ajax_registReply()');
+
+                $('div.write_reply_container input[name="comment"]').val('');
+
+            }
+        });
+    }
+</script>

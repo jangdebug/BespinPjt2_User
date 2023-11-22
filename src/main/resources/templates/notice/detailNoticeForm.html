@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:replace="~{include/title.html::title}"></title>
+
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+  <!--  <link rel="stylesheet" th:href="@{/ckeditor/contents.css}">-->
+  <link rel="stylesheet" th:href="@{/css/notice/noticeDetailForm.css}">
+
+  <script src="/ckeditor5-39.0.1-q2hcooty1ujs/build/ckeditor.js"></script>
+  <script th:replace="~{include/common_js.html::jquery_cdn}" type="text/javascript"></script>
+  <script th:replace="~{include/board/replyJs.html::js}" type="text/javascript"></script>
+  <script th:src="@{/js/board/modifyContentConfirm.js}" type="text/javascript"></script>
+
+  <!--  <script th:replace="~{include/use_console.html::js}" type="text/javascript"></script>-->
+
+</head>
+<body>
+
+<header th:replace="~{include/headerNavFooter.html::header}">
+</header>
+
+<div id="wrap">
+  <nav th:replace="~{include/headerNavFooter.html::nav}">
+  </nav>
+  <section id="sectionWrap">
+    <div class="title">
+      <h3>소통 공간</h3>
+    </div>
+    <div class="content_list">
+      <form th:action="@{/board/modifyContentForm}" name="detailContentForm" method="post">
+        <input type="hidden" name="board_no" th:value="${noticeAndReplyMap.noticeDto.no}">
+        <input type="hidden" name="admin_no" th:value="${noticeAndReplyMap.noticeDto.admin_no}">
+        <span>글번호</span> &nbsp;
+        <span th:text="${noticeAndReplyMap.noticeDto.no}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>작성일</span> &nbsp;
+        <span th:text="${#strings.substring(noticeAndReplyMap.noticeDto.reg_date, 0, 10)}"></span>
+        <span> | 수정일</span> &nbsp;
+        <span th:text="${#strings.substring(noticeAndReplyMap.noticeDto.mod_date, 0, 10)}"></span>
+        <span> | 작성자</span> &nbsp;
+        <span th:text="${noticeAndReplyMap.noticeDto.admin_name}"></span>&nbsp;
+        <span> | 조회수</span> &nbsp;
+        <span th:text="${noticeAndReplyMap.noticeDto.hit}"></span>
+        <hr>
+        <div class="content_title" th:utext="${noticeAndReplyMap.noticeDto.title}"></div>
+        <hr>
+        <br>
+        <div class="content_text" th:utext="${noticeAndReplyMap.noticeDto.content}"></div>
+        <div class="upload_file_list">
+          <ul th:each="uploadedFile : ${noticeAndReplyMap.uploadedFiles}">
+            <input type="hidden" name="board_attach_file" th:value="${uploadedFile.board_attach_file}">
+            <a th:href="@{/download(file=${uploadedFile.board_attach_file}, admin_no=${noticeAndReplyMap.noticeDto.admin_no})}"
+               th:download="${uploadedFile.ori_file_name}">
+              <li th:text="${uploadedFile.ori_file_name}"></li>
+            </a>
+          </ul>
+        </div>
+        <hr>
+        <br>
+        <div class="button-container">
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!--  CK Editor START-->
+<script>
+  ClassicEditor.create(document.querySelector('#editor'),{
+    toolbar: [
+      'exportPdf', 'exportWord', '|',
+      'heading', '|',
+      'alignment', 'bold', 'italic', 'underline', 'fontSize', '|',
+      'fontColor', 'fontBackgroundColor', 'highlight', '|',
+      'imageUpload', 'insertTable', 'link', 'undo', 'redo'
+    ],
+    language: "ko",
+    ckfinder : {
+      uploadUrl: "/image/upload"
+    }
+  })
+  // .then(editor => {
+  //   ('#submitBtn').click(function () {
+  //     writePost(editor);
+  //   })
+  // })
+  // .error(error => {
+  //   console.log(error);
+  // })
+</script>
+<style>
+  .ck-editor__editable {
+    height: 600px;
+  }
+  .ck-content {
+    font-size: 13px;
+  }
+</style>
+<!--CK Editor END-->
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+$(document).ready(function() {
+    console.log('READY!!');
+
+    detailHistory();
+
+    setPage();
+
+    init_main_event();
+
+});
+
+function search(){
+    console.log('search() CALLED!!');
+
+    let url = $('.product_list').attr("id");
+
+    location.href = '/product/' + url
+}
+
+function detailHistory() {
+    console.log('addProduct() CALLED!!');
+
+    let productDivs = document.querySelectorAll('.product_list div.reg_date');
+
+    productDivs.forEach(function (divElement) {
+        let idValue = divElement.getAttribute('id');
+
+        ajax_detailHistory(idValue);
+    });
+}
+
+function ajax_detailHistory(reg_date){
+    console.log('ajax_detailHistory()');
+
+    let msgDto = {
+        reg_date : reg_date
+    }
+
+    $.ajax({
+        url: '/product/detailHistory',
+        method: 'POST',
+        data: JSON.stringify(msgDto),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function(data) {
+            console.log('AJAX SUCCESS - ajax_addProduct()');
+
+            for(let i=0; i<data.productOrderDtos.length; i++){
+                let product = data.productOrderDtos[i];
+
+                let appendTag = "<div class='product'>";
+
+                appendTag += "<div class='img'>";
+                appendTag += '<img width="100" height="100" src="/dormEaseUploadImg/admin/product/' + product.img + '">';
+                appendTag += "</div>";
+
+                appendTag += "<div class='info'>";
+
+                appendTag += "<div class='product_name'>";
+                appendTag += "<span class='name'>이름 : " + product.name + "</span>";
+                appendTag += "</div>";
+
+                appendTag += "<div class='detail'>";
+                appendTag += "<span class='count'>가격 : " + product.price + "</span>";
+                appendTag += "<span class='price'>수량 : " + product.count + "</span>";
+                appendTag += "<span class='sum'>총 가격 : " + product.sum + "</span>";
+                appendTag += "</div>";
+
+                appendTag += "</div>";
+
+                $(".reg_date_trim#" + product.reg_date_trim + " .product_info").append(appendTag);
+            }
+        },
+        error: function(data) {
+            console.log('AJAX ERROR - ajax_addProduct()');
+
+            alert('실패');
+        }
+    });
+}
+
+
+function setPage() {
+    console.log('setPage() CALLED!!');
+
+    let pageMakerDto = [[${pageMakerDto}]];
+
+    /* PAGE UI */
+    $('#section_wrap > div.page_wrap > div.page_number').children().remove();
+
+    // 이전 페이지
+    //console.log(pageMakerDto.prev);
+    if (pageMakerDto.prev) {
+        $('#section_wrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="' + (pageMakerDto.startPage - 1) + '">PRE</a>');
+    }
+
+    // 처음 페이지
+    //if (pageMakerDto.criteria.pageNum > 5) {
+    if (pageMakerDto.criteria.pageNum > 2) {
+        $('#section_wrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="1">1</a><span>...</span>');
+    }
+
+    // 페이지 넘버링
+    for (let p = parseInt(pageMakerDto.startPage); p <= parseInt(pageMakerDto.endPage); p++) {
+        $('#section_wrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="' + p + '">' + p + '</a>');
+    }
+
+    // 페이지 하이라이트
+    $('#section_wrap > div.page_wrap > div.page_number a[data-pagenum=' + pageMakerDto.criteria.pageNum + ']').addClass('selectedPageNum');
+
+    // 다음 페이지
+    if (pageMakerDto.next) {
+        $('#section_wrap > div.page_wrap > div.page_number').append('<a href="#none" data-pagenum="' + (pageMakerDto.endPage + 1) + '">NEX</a>');
+    }
+
+    // 전체 페이지
+    $('#section_wrap > div.page_wrap > div.page_goto > span.page_total_num').text(pageMakerDto.totalPage);
+
+}
+
+function init_main_event() {
+    console.log('init_main_event() CALLED!!');
+
+    // 페이지 번호 클릭 시
+    $(document).on('click', '#section_wrap > div.page_wrap > div.page_number a', function() {
+        console.log('page number CLICK HANDLER');
+
+        let pageNum = $(this).data('pagenum');
+        
+        location.href = '/product/paymentHistory?pageNum=' + pageNum
+
+    });
+
+}
+
+
+
+
+</script>

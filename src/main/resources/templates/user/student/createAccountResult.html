@@ -1,0 +1,24 @@
+
+  <title th:replace="~{include/title.html::title}">
+
+  </title>
+  <script th:inline="javascript">
+
+    console.log('createAccountForm result');
+
+    let result = [[${result}]];
+
+    if (result < 0 || result == undefined) {
+
+      alert('회원가입이 되지 않았습니다.');
+      location.href="redirect:/user/student/createAccountForm";
+
+    } else {
+
+      alert('정상적으로 회원 가입되었습니다.');
+      location.href="/";
+
+    }
+
+
+  </script>

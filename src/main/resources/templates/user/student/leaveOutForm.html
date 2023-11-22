@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:replace="~{include/title.html::title}"></title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+    <link rel="stylesheet" th:href="@{/css/user/student/leaveOutForm.css}">
+
+    <script th:replace="~{include/common_js.html::jquery_cdn}" type="text/javascript"></script>
+    <script th:replace="~{include/student/leaveOutFormJs.html::js}" type="text/javascript"></script>
+
+</head>
+<body>
+<!--<header th:replace="~{include/headerNavFooter.html::header}">-->
+<!--</header>-->
+<!--<nav th:replace="~{include/headerNavFooter.html::nav}">-->
+<!--</nav>-->
+<div id = "wrap">
+    <div class="logo">
+        <a th:href="@{/}">
+            <img src="/imgs/no_background_logo_test.png" >
+        </a>
+    </div>
+    <section>
+        <div id = "sectionWrap">
+            <div class="title">
+                외박 신청
+            </div>
+            <br>
+            <div class = "leaveOutForm">
+                <form th:action = "@{/user/student/leaveOutConfirm}" method="post" name = "leaveOutForm">
+                    <input type="hidden" name="dormitory" th:value="${session.loginedStudentDto.dormitory}">
+                    <input type="hidden" name="student_id" th:value="${session.loginedStudentDto.id}">
+                    <input type="hidden" name="school_no" th:value="${session.loginedStudentDto.school_no}">
+                    <input type="hidden" name="student_name" th:value="${session.loginedStudentDto.name}">
+                    <input type="hidden" name="student_no" th:value="${session.loginedStudentDto.no}" >
+                    <input type="hidden" name="student_grade" th:value="${session.loginedStudentDto.grade}">
+                    <input type="hidden" name="end_date">
+                    <div class="room_no_box">
+                        <div>
+                            기속사 호실
+                        </div>
+                        <input type="text" name="dormitory" th:value="${session.loginedStudentDto.dormitory}" readonly disabled>
+                    </div>
+                    <div class="student_id_box">
+                        <div>
+                            아이디
+                        </div>
+                        <input type="text" name="student_id" th:value="${session.loginedStudentDto.id}" readonly disabled>
+                    </div>
+                    <div class="student_name_box">
+                        <div>
+                            이름
+                        </div>
+                        <input type="text" name="student_name" th:value="${session.loginedStudentDto.name}"readonly disabled>
+                    </div>
+                    <div class="student_grade_box">
+                        <div>
+                            학년
+                        </div>
+                        <input type="text" name="student_grade" th:value="${session.loginedStudentDto.grade}"readonly disabled>
+                    </div>
+                    <div class="leave_out_reason">
+                        <div>
+                            외박 사유
+                        </div>
+                        <input type="text" name="content">
+                    </div>
+                    <div class="date_of_leaving">
+                        <div>
+                            외박 날짜
+                        </div>
+                        <input type="date" name="start_date">
+                    </div>
+                    <div class="btn-container">
+                        <input type = "button" value="신청내역" onclick="window.location.href='/user/student/leavePassList'">
+                        &nbsp;
+                        <input type = "button" value="신청하기" onclick="leaveOutConfirm();">
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{include/headerNavFooter.html::footer}">
+    </footer>
+</div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script th:src="@{/js/postCodeApi.js}" type="text/javascript"></script>
+
+
+
+</body>
+</html>

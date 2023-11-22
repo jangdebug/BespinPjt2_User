@@ -1,0 +1,22 @@
+
+  <title th:replace="~{include/title.html::title}">
+
+  </title>
+  <script th:inline="javascript">
+
+    console.log('modifyAccountForm result');
+
+    let result = [[${result}]];
+
+    if (result < 0 ) {
+      alert("회원수정이 되지 않았습니다.");
+      location.href="redirect:/user/student/modifyAccountForm";
+
+    } else {
+      alert("정상적으로 회원 수정이 되었습니다.");
+      location.href="/";
+
+    }
+
+
+  </script>

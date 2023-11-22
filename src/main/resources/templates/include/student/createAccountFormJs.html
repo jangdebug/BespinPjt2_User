@@ -1,0 +1,202 @@
+<script th:fragment="js" type="text/javascript">
+
+    let checkIdDuplication = false;
+
+    $(document).ready(function () {
+        console.log('DOCUMENT READY!!');
+
+        initEvent();
+
+    });
+
+    function initEvent() {
+        console.log("initEvent() CALLED!!!");
+
+        $("#checkDuplication").on('click', function () {
+            console.log("checkDuplication() CLICK HANDLER CALLED!!!");
+
+            let form = document.createAccountForm;
+            if (form.id.value == '') {
+                alert("아이디를 입력해주세요!");
+                form.id.focus();
+            } else {
+                let id = form.id.value;
+
+                ajax_checkIdDuplication(id);
+            }
+
+        });
+        $("form input[value ='검색']").on('click', function () {
+            console.log("검색 CLICK HANDLER CALLED!!!");
+
+            ajax_searchSchoolName(document.createAccountForm.school_search.value);
+
+        });
+        $("form select[name ='school_no']").on('change', function () {
+            console.log("school_no CHANGE HANDLER CALLED!!!");
+
+            document.createAccountForm.school_name.value = $(this).find("option:selected").data("school_name");
+        });
+    }
+
+    // function filterKey() {
+    //     console.log("filterKey() CALLED!!!");
+    //
+    //     let filterNum = $(this).value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    //     $(this).val(filterNum);
+    // }
+
+    function filterKey(inputElement) {
+        console.log("filterKey(this) CALLED!!!");
+
+        let inputValue = inputElement.value;
+
+        if (inputValue) {
+            // 입력값에 숫자 이외의 문자가 있는지 확인
+            if (/\D/.test(inputValue)) {
+                // 오류 메시지 표시
+                alert("숫자만 입력할 수 있습니다.");
+
+                // 입력값에서 숫자 이외의 문자를 제거하고 다시 설정
+                let filterNum = inputValue.replace(/\D/g, '');
+                inputElement.value = filterNum; // 값을 다시 설정
+            }
+        }
+    }
+
+    function createAccountConfirm() {
+        console.log("createAccountConfirm() CALLED!!!");
+
+        let form = document.createAccountForm;
+
+        if (form.id.value == '') {
+            alert("아이디를 입력해주세요!");
+            form.id.focus();
+        } else if (form.password.value == '') {
+            alert("비밀번호를 입력해주세요!");
+            form.password.focus();
+        } else if (form.password_again.value == '') {
+            alert("비밀번호 확인을 다시 입력해주세요!");
+            form.password_again.focus();
+        } else if (form.password.value != form.password_again.value) {
+            alert("비밀번호와 비밀번호 확인이 맞지 않습니다.");
+            form.password.focus();
+        } else if (form.name.value == '') {
+            alert("이름을 입력해주세요!");
+            form.name.focus();
+        } else if (form.phone1.value == '') {
+            alert("핸드폰 번호를 입력해주세요!");
+            form.phone1.focus();
+        } else if (form.phone2.value == '') {
+            alert("핸드폰 번호를 입력해주세요!");
+            form.phone2.focus();
+        } else if (form.phone3.value == '') {
+            alert("핸드폰 번호를 입력해주세요!");
+            form.phone3.focus();
+        } else if (form.mail1.value == '') {
+            alert("메일을 입력해주세요!");
+            form.mail1.focus();
+        } else if (form.mail2.value == '') {
+            alert("도메인을 입력해주세요!");
+            form.mail2.focus();
+        } else if (form.school_name.value == '') {
+            alert("학교 이름을 선택해주세요!");
+            form.school_name.focus();
+        } else if (form.grade.value == '') {
+            alert("학년을 선택해주세요!");
+            form.grade.focus();
+        } else if (form.class_no.value == '') {
+            alert("반을 입력해주세요!");
+            form.class_no.focus();
+        } else if (form.zip_code.value == '') {
+            alert("우편번호를 입력해주세요!");
+            form.zip_code.focus();
+        } else if (form.address.value == '') {
+            alert("주소를 입력해주세요!");
+            form.address.focus();
+        } else if (form.address_detail1.value == '') {
+            alert("주소를 입력해주세요!");
+            form.address.focus();
+        } else if (!checkIdDuplication) {
+            alert("아이디 중복체크를 해주세요!");
+        } else {
+            form.phone.value = (form.phone1.value + form.phone2.value + form.phone3.value);
+            form.mail.value = (form.mail1.value + '@' + form.mail2.value);
+
+            form.submit();
+        }
+
+    }
+
+
+    // AJAX START
+
+    function ajax_checkIdDuplication(id) {
+        console.log("ajax_checkIdDuplication() CALLED!!!");
+        msgDto = {
+            'id': id,
+        }
+
+        $.ajax({
+            url: '/user/member/checkIdDuplication',
+            type: 'GET',
+            data: msgDto,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_checkIdDuplication()');
+
+                let isDuplicateID = data.isDuplicateID;
+                $("#duplicationResult").children().remove();
+                let appendTag = "<span>";
+                if (isDuplicateID) {
+                    appendTag += "아이디가 중복입니다.";
+                } else {
+                    appendTag += "사용가능한 아이디입니다.";
+                    checkIdDuplication = true;
+                }
+                appendTag += "</span>";
+
+                $("#duplicationResult").append(appendTag);
+
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_checkIdDuplication()');
+            }
+        });
+    }
+
+    function ajax_searchSchoolName(name) {
+        console.log("ajax_searchSchoolName() CALLED!!!");
+        console.log(name);
+        msgDto = {
+            'name': name,
+        }
+
+        $.ajax({
+            url: '/user/member/searchSchoolName',
+            type: 'GET',
+            data: msgDto,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_searchSchoolName()');
+
+                let schoolDtos = data.schoolDtos;
+
+                $('div.createAccountForm select[name = "school_no"]').children().remove();
+                $('div.createAccountForm select[name = "school_no"]').append("<option value=' '>---선택해주세요---</option>");
+                let appendTag = "";
+                for(let i = 0; i < schoolDtos.length; i++){
+                    appendTag += "<option value="+ schoolDtos[i].school_code + " data-school_name ="+ schoolDtos[i].school_name+ ">" + schoolDtos[i].school_name + "</option>";
+                }
+                $('div.createAccountForm select[name = "school_no"]').append(appendTag);
+
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_searchSchoolName()');
+            }
+        });
+
+    }
+</script>

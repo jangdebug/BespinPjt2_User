@@ -1,0 +1,54 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+    $(document).ready(function () {
+        console.log('DOCUMENT READY!!');
+        setPage();
+
+        initEvent();
+
+    });
+
+
+    function initEvent() {
+        console.log("initEvent() CALLED!!!");
+
+        $(document).on("click", "#sectionWrap div.pageWrap div.pageNumber a", function (e) {
+            console.log("page CLICK HANDLER!!");
+            let pageNum = $(this).data('pagenum');
+            if(confirm("정말 해당 외박 신청 내역을 삭제하시겠습니까?")){
+                location.href = "/user/parents/leavePassList?pageNum=" + pageNum;
+            }
+        });
+    }
+
+    function setPage() {
+        console.log('setPage() CALLED!!');
+
+        let pageMakerDto = [[${pageMakerDto}]];
+
+        $("#sectionWrap  div.pageWrap div.pageNumber").children().remove();
+
+
+        if (pageMakerDto.prev) {
+            $("#sectionWrap  div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum = '" + (pageMakerDto.startPage - 1) + "'>PRE</a>");
+        }
+
+        /* 처음 페이지 */
+        if (pageMakerDto.criteria.pageNum > 10) {
+            $("#sectionWrap div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum = '1' " + "'>1</a><span>...</span>");
+        }
+
+        /* 페이지 넘버링 */
+        for (let p = parseInt(pageMakerDto.startPage); p <= parseInt(pageMakerDto.endPage); p++) {
+            $("#sectionWrap  div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum='" + p + "'>" + p + "</a>");
+        }
+
+        /* 페이지 하이라이트 */
+        $("#section_wrap > div.page_wrap > div.pageNumber a[data-pagenum=" + pageMakerDto.criteria.pageNum + "]").addClass('selectedPageNum');
+
+        /* 다음 페이지 */
+        if (pageMakerDto.next) {
+            $("#sectionWrap  div.pageWrap > div.pageNumber").append("<a href='#none' data-pagenum = '" + (pageMakerDto.endPage + 1) + "'>NEX</a>");
+        }
+
+    }
+</script>

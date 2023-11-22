@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+
+    <section>
+        <div class="test">test입니다.</div>
+        <div class="section-wrap">
+            <div class="info-container">
+                <div class="flex">
+                    <div class="notice-container">
+                        <div class = "word"><h2>공지 사항</h2></div>
+                        <a th:href = "@{/notice/noticeListForm}"><img src = "/imgs/notice.png"></a>
+                    </div>
+                    <div class="timetable-container">
+                        <div class = "word"><h2>자유 게시판</h2></div>
+                        <a th:href = "@{/board/freeBoardListForm}"><img src = "/imgs/notepad.png"></a>
+                    </div>
+                </div>
+                <div class="flex">
+                    <div class="eng-word-container">
+                        <div class = "word"><h2>매점</h2></div>
+                        <a th:href = "@{/product/mySchoolProductForm}"><img src = "/imgs/purchase.png"></a>
+                    </div>
+                    <div class="menu-container">
+                        <div class = "word"><h2>외박 내역</h2></div>
+                        <a th:href = "@{/user/student/leavePassList}"><img src = "/imgs/leavePass.png"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="privacy-container">
+                <div class="login-container">
+                    <form th:if="${session.loginedStudentDto == null && session.loginedParentsDto == null}">
+                        <h2>Login to Cozy Nest</h2>
+                        <button type="button" onclick="location.href='/user/member/loginForm';">로그인</button>
+                        <span><a th:href="@{/user/member/beforeCreateAccount}">회원가입</a></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+                        <span><a th:href="@{/user/member/findIDForm}">아이디 찾기</a></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+                        <span><a th:href="@{/user/member/findPasswordForm}">비밀번호 찾기</a></span>
+                    </form>
+                    <form th:if ="${session.loginedStudentDto != null}">
+                        <div><h2 th:text="${session.loginedStudentDto.name} + 님"></h2>
+                            환영합니다.</div>
+                        <button type="button" onclick="location.href='/user/student/logoutConfirm';">로그아웃</button>
+                        <span><a th:href="@{/user/student/modifyAccountForm}">수정하기</a></span>
+                    </form>
+                    <form th:if ="${session.loginedParentsDto != null}">
+                        <div><h2 th:text="${session.loginedParentsDto.name} + 님"></h2>
+                            환영합니다.</div>
+                        <button type="button" onclick="location.href='/user/parents/logoutConfirm';">로그아웃</button>
+                        <span><a th:href="@{/user/parents/modifyAccountForm}">수정하기</a></span>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+<!--    <div class="wrap" th:if="${session.loginedStudentDto == null}">-->
+<!--        <a th:href="@{/user/student/createAccountForm}">회원가입</a>-->
+<!--        <a th:href="@{/user/student/loginForm}">로그인</a>-->
+<!--    </div>-->
+
+
+</body>
+</html>

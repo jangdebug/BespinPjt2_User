@@ -1,0 +1,164 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+  $(document).ready(function() {
+    console.log('DOCUMENT READY!!');
+
+      init();
+
+
+
+  });
+
+  function init() {
+    console.log("init CALLED!!!");
+
+    $("#sectionWrap > div.modifyAccountForm > form > input[value = '계정 삭제']").on('click', function (){
+        console.log("delete CLICK HANDLER!!!");
+
+        let no = $(this).data('no');
+
+        if(confirm("정말로 탈퇴하시겠습니까?")){
+           ajax_deleteAccount(no);
+        }
+
+    });
+
+    $("#updatePassword").on('click', function (){
+        console.log("updatePassword CLICK HANDLER!!!");
+
+        let no = $(this).data('no');
+
+        location.href = "/user/member/updatePasswordForm?isStudent=true&no="+no;
+
+    });
+
+    phoneValue();
+
+}
+function phoneValue(){
+      console.log("phoneValue()");
+
+    let form = document.modifyAccountForm;
+
+    let loginedStudentDto = [[${session.loginedStudentDto}]];
+
+    let phone = loginedStudentDto.phone;
+    var mail = loginedStudentDto.mail;
+    var mails = mail.split('@');
+
+    var phone3 = phone.substring(phone.length - 4, phone.length);
+    var phone1 = phone.substring(0,3);
+    var phone2 = phone.substring(3 ,(phone.length - phone3.length));
+
+    form.phone1.value = phone1;
+    $("#phone1").val(phone1).prop("selected", true);
+
+    $('input[name="phone3"]').val(phone3);
+    $('input[name="phone2"]').val(phone2);
+    $('input[name="mail1"]').val(mails[0]);
+    $("select[name='mail2']").val(mails[1]).prop("selected", true);
+}
+
+
+function modifyAccountConfirm() {
+    console.log("modifyAccountConfirm CALLED!!!!");
+
+    let form = document.modifyAccountForm;
+
+    if(form.id.value == ''){
+        alert("아이디를 입력해주세요!");
+        form.id.focus();
+    } else if(form.password.value == ''){
+        alert("비밀번호를 입력해주세요!");
+        form.password.focus();
+    } else if(form.name.value == ''){
+        alert("이름을 입력해주세요!");
+        form.name.focus();
+    } else if(form.gender.value == ''){
+        alert("성별을 선택해주세요!");
+        form.gender.focus();
+    } else if(form.phone1.value == ''){
+        alert("핸드폰 번호를 입력해주세요!");
+        form.phone1.focus();
+    } else if(form.phone2.value == ''){
+        alert("핸드폰 번호를 입력해주세요!");
+        form.phone2.focus();
+    } else if(form.phone3.value == ''){
+        alert("핸드폰 번호를 입력해주세요!");
+        form.phone3.focus();
+    } else if(form.mail1.value == ''){
+        alert("메일을 입력해주세요!");
+        form.mail1.focus();
+    } else if(form.mail2.value == ''){
+        alert("도메인을 입력해주세요!");
+        form.mail2.focus();
+    } else if(form.school_name.value == ''){
+        alert("학교 이름을 선택해주세요!");
+        form.school_name.focus();
+    } else if(form.grade.value == ''){
+        alert("학년을 선택해주세요!");
+        form.grade.focus();
+    } else if(form.class_no.value == ''){
+        alert("반을 입력해주세요!");
+        form.class_no.focus();
+    } else if(form.eigen_no.value == ''){
+        alert("번호를 입력해주세요!");
+        form.eigen_no.focus();
+    } else if(form.zip_code.value == ''){
+        alert("주소를 입력해주세요!");
+        form.zip_code.focus();
+    } else if(form.address.value == ''){
+        alert("주소를 입력해주세요!");
+        form.address.focus();
+    } else if(form.address_detail1.value == ''){
+        alert("주소를 입력해주세요!");
+        form.address_detail1.focus();
+    } else {
+        form.phone.value = (form.phone1.value + form.phone2.value + form.phone3.value);
+        form.mail.value =(form.mail1.value + '@'+ form.mail2.value);
+
+        form.submit();
+    }
+
+}
+
+// AJAX START
+
+  function ajax_deleteAccount(no) {
+      console.log("ajax_deleteAccount");
+
+      msgDto = {
+          'no': no,
+      }
+
+      $.ajax({
+          url: '/user/student/deleteConfirm',
+          type: 'GET',
+          data: msgDto,
+          contentType: 'application/json; charset=utf-8',
+          dataType: 'json',
+          success: function(data) {
+              console.log('AJAX SUCCESS - ajax_deleteAccount()');
+
+              let result = data.result;
+
+              if(result > 0) {
+                  alert("탈퇴를 성공적으로 했습니다.");
+                  location.href = "/";
+              } else {
+                  alert("탈퇴를 실패했습니다.");
+              }
+
+          },
+          error: function(data) {
+              console.log('AJAX ERROR - ajax_deleteAccount()');
+
+          }
+      });
+
+
+  }
+
+
+
+</script>

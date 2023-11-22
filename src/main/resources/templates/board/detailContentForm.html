@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:replace="~{include/title.html::title}"></title>
+
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+  <!--  <link rel="stylesheet" th:href="@{/ckeditor/contents.css}">-->
+  <link rel="stylesheet" th:href="@{/css/board/boardDetailForm.css}">
+
+  <script src="/ckeditor5-39.0.1-q2hcooty1ujs/build/ckeditor.js"></script>
+  <script th:replace="~{include/common_js.html::jquery_cdn}" type="text/javascript"></script>
+  <script th:replace="~{include/board/replyJs.html::js}" type="text/javascript"></script>
+  <script th:src="@{/js/board/modifyContentConfirm.js}" type="text/javascript"></script>
+
+  <!--  <script th:replace="~{include/use_console.html::js}" type="text/javascript"></script>-->
+
+</head>
+<body>
+
+<header th:replace="~{include/headerNavFooter.html::header}">
+</header>
+
+<div id="wrap">
+  <nav th:replace="~{include/headerNavFooter.html::nav}">
+  </nav>
+  <section id="sectionWrap">
+    <div class="title">
+      <h3>소통 공간</h3>
+    </div>
+    <div class="content_list">
+      <form th:action="@{/board/modifyContentForm}" name="detailContentForm" method="post">
+        <input type="hidden" name="board_no" th:value="${boardAndReplyMap.boardDto.no}">
+        <input type="hidden" name="student_no" th:value="${boardAndReplyMap.boardDto.student_no}">
+        <span>글번호</span> &nbsp;
+        <span th:text="${boardAndReplyMap.boardDto.no}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>작성일</span> &nbsp;
+        <span th:text="${#strings.substring(boardAndReplyMap.boardDto.reg_date, 0, 10)}"></span>
+        <span> | 수정일</span> &nbsp;
+        <span th:text="${#strings.substring(boardAndReplyMap.boardDto.mod_date, 0, 10)}"></span>
+        <span> | 작성자</span> &nbsp;
+        <span th:text="${boardAndReplyMap.boardDto.student_name}"></span>&nbsp;
+        <span> | 조회수</span> &nbsp;
+        <span th:text="${boardAndReplyMap.boardDto.hit}"></span>
+        <hr>
+        <div class="content_title" th:utext="${boardAndReplyMap.boardDto.title}"></div>
+        <hr>
+        <br>
+        <div class="content_text" th:utext="${boardAndReplyMap.boardDto.content}"></div>
+        <div class="upload_file_list">
+          <ul th:each="uploadedFile : ${boardAndReplyMap.uploadedFiles}">
+            <input type="hidden" name="board_attach_file" th:value="${uploadedFile.board_attach_file}">
+            <a th:href="@{/download(file=${uploadedFile.board_attach_file}, student_no=${boardAndReplyMap.boardDto.student_no})}"
+               th:download="${uploadedFile.ori_file_name}">
+              <li th:text="${uploadedFile.ori_file_name}"></li>
+            </a>
+          </ul>
+        </div>
+        <hr>
+        <br>
+        <div class="button-container">
+          <input type="submit" value="수정" th:if="${session.loginedStudentDto.no==boardAndReplyMap.boardDto.student_no}">
+          <input type="submit" value="삭제" onclick="deleteContentConfirm()">
+          <input type="button" value="취소" onclick="location.href='/board/freeBoardListForm';">
+        </div>
+      </form>
+    </div>
+    <div class="write_reply_container">
+      <input type="text" name="comment" value="">
+      <input type="button" value="댓글 작성">
+    </div>
+    <br>
+    <div class="reply_list">
+      <div th:each="replyDto : ${boardAndReplyMap.replyDtos}">
+          <span>
+            <div th:text="'작성자 : '+${replyDto.student_name}"></div>
+            <div th:text="${#strings.substring(replyDto.mod_date, 0, 10)}"></div>
+          </span>
+        <span class="reply_comment" th:text="'ㄴ'+${replyDto.comment}"></span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!--  CK Editor START-->
+<script>
+  ClassicEditor.create(document.querySelector('#editor'),{
+    toolbar: [
+      'exportPdf', 'exportWord', '|',
+      'heading', '|',
+      'alignment', 'bold', 'italic', 'underline', 'fontSize', '|',
+      'fontColor', 'fontBackgroundColor', 'highlight', '|',
+      'imageUpload', 'insertTable', 'link', 'undo', 'redo'
+    ],
+    language: "ko",
+    ckfinder : {
+      uploadUrl: "/image/upload"
+    }
+  })
+  // .then(editor => {
+  //   ('#submitBtn').click(function () {
+  //     writePost(editor);
+  //   })
+  // })
+  // .error(error => {
+  //   console.log(error);
+  // })
+</script>
+<style>
+  .ck-editor__editable {
+    height: 600px;
+  }
+  .ck-content {
+    font-size: 13px;
+  }
+</style>
+<!--CK Editor END-->
+
+</body>
+</html>

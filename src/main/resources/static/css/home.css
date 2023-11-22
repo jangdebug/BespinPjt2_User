@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    flex-direction: column;
+}
+
+.section-wrap {
+    display: flex;
+}
+
+.section-wrap > div {
+    display: inline-block;
+    align-items: flex-start;
+    margin-top: 15px;
+}
+
+.flex {
+    display: flex;
+    /*margin-bottom: 20px; !* 두 요소 사이의 공백 조정 *!*/
+}
+
+.flex > div{
+    justify-content: space-between;
+}
+
+.notice-container,
+.eng-word-container {
+    margin: 10px 10px;
+    /*padding: auto;*/
+    min-width: 450px;
+    max-width: 450px;
+    min-height: 250px;
+    max-height: 250px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.timetable-container,
+.menu-container {
+    margin: 10px 10px;
+    /*padding: auto;*/
+    min-width: 450px;
+    max-width: 450px;
+    min-height: 250px;
+    max-height: 250px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+
+.login-container {
+    margin: 10px 10px;
+    min-width: 350px;
+    max-width: 350px;
+    min-height: 180px;
+    max-height: 180px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+h2{
+    margin-top: 10px;
+    bottom: 10px;
+}
+
+img{
+    width: 180px;
+    height: auto;
+}
+
+.point-container {
+    margin: 10px 10px;
+    min-width: 350px;
+    max-width: 350px;
+    min-height: 180px;
+    max-height: 180px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+
+.login-container h2 {
+    margin-bottom: 10px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    margin: 15px auto;
+    width: 100%;
+    padding: 10px;
+    background-color: #1976d2;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #1565c0;
+}

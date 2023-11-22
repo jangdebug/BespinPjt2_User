@@ -1,0 +1,94 @@
+#section_wrap {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+/*!* Reset some default styles and set common properties *!*/
+/*body, h1, h2, h3, ul, p, input, textarea, button {*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    border: 0;*/
+/*    font-size: 100%;*/
+/*    font-family: Arial, sans-serif;*/
+/*}*/
+
+/* Set background color and padding for header, nav, section, and footer */
+section{
+    background-color: #f1f1f1;
+    padding: 20px 0;
+}
+
+/* Center align header title and nav menu */
+header h1, nav ul {
+    text-align: center;
+}
+
+/* Style navigation menu */
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+/* Set a maximum width and center content in a container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Center align text in the "word" section */
+.word {
+    text-align: center;
+}
+
+/* Style content list */
+.content_list {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Right-align button container */
+.button-container {
+    text-align: right;
+    margin-top: 20px;
+}
+
+input[type="text"] {
+    width: 97.8%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Set styles for textarea and buttons */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+input[type="button"],
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}

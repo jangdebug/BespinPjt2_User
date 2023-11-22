@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oneteam.dormease.user.parents.IParentsMapper">
+    <insert id="insertNewParent">
+        insert into
+            parents
+        (
+            id, password, student_no, relation, phone, mail, zip_code, address, address_detail1, address_detail2, reg_date, mod_date
+        ) values (#{id}, #{password}, #{student_no}, #{relation}, #{phone}, #{mail}, #{zip_code}, #{address}, #{address_detail1}, #{address_detail2},now(), now())
+    </insert>
+    <select id="selectStudents">
+        SELECT
+            *
+        FROM
+            student
+        <where>
+            school_name = #{school_name}
+            <if test="grade != null">
+                AND grade = #{grade}
+            </if>
+            <if test="class_no != null">
+                AND class_no = #{class_no}
+            </if>
+        </where>
+    </select>
+    <update id="updateFailCount">
+        UPDATE
+        parents
+        <set>
+            <if test="no == 0">
+                fail_count = fail_count + 1
+            </if>
+            <if test="no != 0">
+                fail_count = 0
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+    <select id="selectParent" parameterType="ParentsDto" resultType="ParentsDto">
+        SELECT
+            p.*,
+            s.school_no,
+            s.school_name,
+            s.grade as student_grade,
+            s.class_no as student_class
+        FROM
+            parents p
+        JOIN
+            student s
+        ON
+            p.student_no = s.no
+        <where>
+            <if test="id != null">
+            p.id = #{id} AND p.status = 1
+            </if>
+            <if test="id == null">
+                p.no = #{no}
+            </if>
+        </where>
+    </select>
+    <update id="updateParent" parameterType="ParentsDto">
+        UPDATE
+            parents
+        SET
+            phone = #{phone},
+            mail = #{mail},
+            zip_code = #{zip_code},
+            address = #{address},
+            address_detail1 = #{address_detail1},
+            address_detail2 = #{address_detail2}
+        WHERE
+            no = #{no}
+    </update>
+    <update id="deleteParentByNo">
+        UPDATE
+            parents
+        SET
+            status = 0
+        where
+            no = #{no}
+    </update>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneteam.dormease.product.IProductMapper">
+
+    <select id="mySchoolProduct" parameterType="String" resultType="com.oneteam.dormease.product.MySchoolProductDto">
+        SELECT
+            *
+        FROM
+            product_regist
+        WHERE
+            zip_code = #{zip_code} AND
+            status = 1
+        ORDER BY
+            no
+    </select>
+
+    <select id="findProduct" resultType="com.oneteam.dormease.product.MySchoolProductDto">
+        SELECT
+            *
+        FROM
+            product_regist
+        WHERE
+            zip_code = #{zipCode} AND
+            product_name like CONCAT('%',#{productName},'%') AND
+            status = 1
+        ORDER BY
+            no
+    </select>
+
+    <insert id="registProductConfirm" parameterType="java.util.List">
+        insert into
+            product_order(
+                        id,
+                        img,
+                        name,
+                        count,
+                        price,
+                        sum,
+                        allsum,
+                        reg_date,
+                        reg_date_trim,
+                        mod_date
+            )
+        values
+            <foreach collection="list" item="item" separator=", ">
+                (
+                #{item.id},
+                #{item.img},
+                #{item.name},
+                #{item.count},
+                #{item.price},
+                #{item.sum},
+                #{item.allsum},
+                NOW(),
+                CONCAT('trim', DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')),
+                NOW()
+                )
+            </foreach>
+    </insert>
+
+    <select id="paymentHistory" resultType="com.oneteam.dormease.product.ProductOrderDto">
+        SELECT
+            DISTINCT reg_date, reg_date_trim, allsum
+        FROM
+            product_order
+        WHERE
+            id = #{id}
+        ORDER BY reg_date DESC
+        LIMIT #{skip}, #{amount}
+    </select>
+
+    <select id="dayCount" resultType="Integer">
+        SELECT
+            COUNT(DISTINCT reg_date)
+        FROM
+            product_order
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="detailHistory" resultType="com.oneteam.dormease.product.ProductOrderDto">
+        SELECT
+            *
+        FROM
+            product_order
+        WHERE
+            id = #{id} AND
+            reg_date like CONCAT('%',#{regDate},'%')
+    </select>
+
+
+
+</mapper>

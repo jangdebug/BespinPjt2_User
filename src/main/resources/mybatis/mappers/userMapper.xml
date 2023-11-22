@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oneteam.dormease.user.member.IUserMapper">
+    <select id="selectDuplicateByID" parameterType="String" resultType="boolean">
+        SELECT count(*)
+        FROM (SELECT id
+              FROM student
+              UNION
+              SELECT id
+              FROM parents
+              UNION
+              SELECT id
+              FROM admin) a
+        WHERE id = #{id}
+    </select>
+    <select id="selectSchoolsByName" parameterType="String">
+        SELECT DISTINCT info.*,
+                        excel.address
+        FROM schoolInfo info
+                 JOIN school_Excel excel
+                      ON info.zip_code = excel.zip_code
+        WHERE info.school_name LIKE CONCAT('%', #{name}, '%')
+        ORDER BY info.school_name ASC;
+    </select>
+    <select id="selectStudentByNo" parameterType="String">
+        SELECT *
+        FROM student
+        WHERE
+            no = #{no} and status = 1
+    </select>
+    <select id="selectParentByNo" parameterType="String">
+        SELECT *
+        FROM parents
+        WHERE
+            no = #{no} and status = 1
+    </select>
+    <update id="updateStudentPassword" parameterType="String">
+        UPDATE
+        student
+        set password = #{password}
+        <where>
+            <if test="no != 0">
+                no = #{no}
+            </if>
+            <if test="id != 0">
+                id = #{id}
+            </if>
+        </where>
+    </update>
+    <update id="updateParentPassword" parameterType="String">
+        UPDATE
+        parents
+        SET password = #{password}
+        <where>
+            <if test="no != 0">
+                no = #{no}
+            </if>
+            <if test="id != 0">
+                id = #{id}
+            </if>
+        </where>
+    </update>
+    <update id="updateStudentAuthNoBySmsDto" parameterType="SmsDTO">
+        UPDATE
+        student
+        SET auth_no = #{content}
+        <where>
+            name = #{name}
+            AND phone = #{to}
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </update>
+    <update id="updateParentAuthNoBySmsDto" parameterType="SmsDTO">
+        UPDATE
+        parents
+        SET auth_no = #{content}
+        <where>
+            name = #{name}
+            AND phone = #{to}
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </update>
+    <select id="selectStudentBySmsDto" parameterType="SmsDTO">
+        SELECT *
+        FROM student
+        <where>
+            name = #{name}
+            AND phone = #{to}
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </select>
+    <select id="selectParentBySmsDto" parameterType="SmsDTO">
+        SELECT *
+        FROM parents
+        <where>
+            name = #{name}
+            AND phone = #{to}
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </select>
+    <update id="updateFailCount" parameterType="SmsDTO">
+        UPDATE
+        <if test="isStudent == true">
+            student
+        </if>
+        <if test="isStudent == false">
+            parents
+        </if>
+        SET
+        fail_count = 0
+        WHERE
+        id = #{id} AND phone = #{to}
+    </update>
+    <select id="selectLeavePassesCount" parameterType="Integer" resultType="Integer">
+        SELECT
+            count(*)
+        FROM
+            leave_pass
+        WHERE
+            student_no = #{no}
+    </select>
+    <select id="selectLeavePass" parameterType="PageMakerDto" resultType="LeavePassDto">
+        SELECT
+            *
+        FROM
+            leave_pass
+        <if test="keyWord != null">
+        WHERE
+            student_no = #{keyWord}
+        </if>
+        LIMIT
+            #{criteria.skip}, #{criteria.amount}
+    </select>
+</mapper>

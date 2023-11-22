@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:replace="~{include/title.html::title}"></title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/headerFooter.css}">
+    <link rel="stylesheet" th:href="@{/css/user/loginForm.css}">
+
+    <script th:replace="~{include/common_js.html::jquery_cdn}" type="text/javascript"></script>
+    <script th:replace="~{include/member/loginFormJs.html::js}" type="text/javascript"></script>
+</head>
+<body>
+
+<section>
+    <div id = "sectionWrap">
+        <div class="logo">
+            <a th:href="@{/}">
+                <img src="/imgs/no_background_logo_test.png" >
+            </a>
+        </div>
+        <form th:action="@{/user/student/loginConfirm}" method="post" id = "loginForm" name = "loginForm">
+            <div class = "loginForm">
+                <div class="loginConfirmResult">
+
+                </div>
+                <label class="loginRadio">
+                    <input type="radio" name="student" value="학생" checked="checked">
+                    <span>학생</span>
+                </label>
+                <label class="loginRadio">
+                    <input type="radio" name="parents" value="학부모" >
+                    <span>학부모</span>
+                </label>
+                <br>
+                <br>
+                <input type = "text" name = "id" placeholder="아이디"><br>
+                <input type = "password" name = "password" placeholder="비밀번호"><br>
+                <br>
+                <input type = "button" value="로그인">
+            </div>
+            <!-- 비밀번호 찾기, 아이디 찾기, 회원가입 -->
+            <div class="findMember">
+                <a th:href="@{/user/member/beforeCreateAccount}">회원가입</a>
+                |
+                <a th:href="@{/user/member/findIDForm}">아이디 찾기</a>
+                |
+                <a th:href="@{/user/member/findPasswordForm}">비밀번호 찾기</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<footer th:replace="~{include/headerNavFooter.html::footer}">
+
+</footer>
+
+</body>
+</html>

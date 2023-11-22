@@ -1,0 +1,14 @@
+<script th:inline="javascript">
+
+  var deleteContentResult = [[${result}]];
+
+  if (deleteContentResult > 0) {
+    // 글 작성 성공시에 실행되는 스크립트
+    alert("컨텐츠가 정상적으로 삭제되었습니다.");
+  } else {
+    // 글 작성 실패시에 실행되는 스크립트
+    alert("컨텐츠 삭제를 실패하였습니다..");
+  }
+
+  window.location.href = '/board/freeBoardListForm';
+</script>

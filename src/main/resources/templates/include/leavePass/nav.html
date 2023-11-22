@@ -1,0 +1,28 @@
+<nav th:fragment="nav">
+    <div id="navWrap"> &nbsp;&nbsp;
+        <table>
+            <thead>
+                <tr>
+                    <th th:text="${session.loginedStudentDto.school_name}">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <a th:href="@{/user/student/leaveOutForm}">
+                            외박 신청
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a th:href="@{/user/student/leavePassList}">
+                            외박 신청 내역
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</nav>
